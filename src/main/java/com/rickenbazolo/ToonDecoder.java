@@ -376,7 +376,7 @@ public class ToonDecoder {
 
             if (values.length != fields.length && options.strict()) {
                 throw new ToonParseException(
-                    "Nombre de valeurs (" + values.length + ") ne correspond pas au nombre de champs (" + fields.length + ")"
+                    "Number of values (" + values.length + ") does not match number of fields (" + fields.length + ")"
                 );
             }
 
@@ -421,7 +421,7 @@ public class ToonDecoder {
 
         if (options.strict() && values.length != expectedLength) {
             throw new ToonParseException(
-                "Longueur de tableau déclarée: " + expectedLength + ", mais " + values.length + " valeurs trouvées"
+                "Declared array length: " + expectedLength + ", but found " + values.length + " values"
             );
         }
 

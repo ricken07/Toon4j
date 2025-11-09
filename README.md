@@ -13,6 +13,37 @@ A Java implementation of **TOON** (Token-Oriented Object Notation), a compact se
 
 > **Origin**: This Java implementation is based on the TOON format specification defined at [toon-format-spec](https://github.com/toon-format/spec). This version fully respects the TOON specifications while focusing on providing a robust Java API for easy integration into existing projects.
 
+## 📚 Table of Contents
+
+- [ What is TOON?](#-what-is-toon)
+  - [Comparison Example](#comparison-example)
+- [ Installation](#-installation)
+  - [Maven](#maven)
+  - [Gradle](#gradle)
+- [ Quick Start](#-quick-start)
+  - [Basic Encoding](#basic-encoding)
+  - [Basic Decoding](#basic-decoding)
+  - [JSON Conversion](#json-conversion)
+- [ Array Formats](#-array-formats)
+  - [1. Tabular Arrays (Objects with identical keys)](#1-tabular-arrays-objects-with-identical-keys)
+  - [2. Primitive Arrays](#2-primitive-arrays)
+  - [3. List Arrays (Complex nested data)](#3-list-arrays-complex-nested-data)
+- [️ Configuration Options](#️-configuration-options)
+  - [Available Delimiters](#available-delimiters)
+- [ Token Savings Analysis](#-token-savings-analysis)
+- [️ Architecture](#️-architecture)
+  - [Core Classes](#core-classes)
+  - [Key Features](#key-features)
+- [ Advanced Usage](#-advanced-usage)
+  - [Custom Object Mapping](#custom-object-mapping)
+  - [Error Handling](#error-handling)
+  - [Working with Streams](#working-with-streams)
+- [ Testing](#-testing)
+- [ Requirements](#-requirements)
+- [ Contributing](#-contributing)
+  - [Development Guidelines](#development-guidelines)
+- [ License](#-license)
+
 ## 🎯 What is TOON?
 
 TOON is a data format designed to transmit structured information to LLMs with **30-60% fewer tokens** than JSON. It combines the indentation-based structure of YAML with the tabular format of CSV, while remaining human-readable.
@@ -270,6 +301,16 @@ We welcome contributions! Here's how to get started:
 - Include unit tests for new features
 - Update documentation as needed
 - Ensure backward compatibility
+
+## 🌐 Related Projects
+
+This is one of many community implementations of the TOON format. For a complete list of implementations in other programming languages, see the [Community Implementations](https://github.com/toon-format/toon#community-implementations) section in the official TOON specification repository.
+
+### Other Java Implementations
+- [JToon](https://github.com/felipestanzani/JToon) by Felipe Stanzani
+
+### Cross-Language Ecosystem
+The TOON format is available in 15+ programming languages including .NET, C++, Go, Python, Rust, and more. Visit [toon-format/toon](https://github.com/toon-format/toon) for the complete ecosystem.
 
 ## 📄 License
 
