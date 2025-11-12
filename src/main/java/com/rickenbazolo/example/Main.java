@@ -1,7 +1,7 @@
 package com.rickenbazolo.example;
 
-import com.rickenbazolo.Toon;
-import com.rickenbazolo.ToonOptions;
+import com.rickenbazolo.toon.Toon;
+import com.rickenbazolo.toon.config.ToonOptions;
 
 import java.util.List;
 import java.util.Map;

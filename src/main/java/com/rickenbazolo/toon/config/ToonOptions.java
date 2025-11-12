@@ -1,4 +1,7 @@
-package com.rickenbazolo;
+package com.rickenbazolo.toon.config;
+
+import com.rickenbazolo.toon.core.ToonDecoder;
+import com.rickenbazolo.toon.core.ToonEncoder;
 
 /**
  * Configuration options for TOON encoding and decoding operations.

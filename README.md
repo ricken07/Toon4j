@@ -90,17 +90,18 @@ implementation 'com.rickenbazolo:toon-java:$version'
 ### Basic Encoding
 
 ```java
-import com.rickenbazolo.Toon;
+import com.rickenbazolo.toon.Toon;
+
 import java.util.*;
 
 // Simple object
 Map<String, Object> user = Map.of(
-    "id", 123,
-    "name", "Ada",
-    "active", true
+        "id", 123,
+        "name", "Ada",
+        "active", true
 );
 
-String toon = Toon.encode(user);
+        String toon = Toon.encode(user);
 // Result: id: 123\nname: Ada\nactive: true
 ```
 

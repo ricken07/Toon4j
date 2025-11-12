@@ -1,9 +1,22 @@
-package com.rickenbazolo;
+package com.rickenbazolo.toon;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rickenbazolo.toon.config.ToonOptions;
+import com.rickenbazolo.toon.converter.json.JsonToToonConverter;
+import com.rickenbazolo.toon.converter.json.JsonToToonOptions;
+import com.rickenbazolo.toon.converter.json.ToonToJsonConverter;
+import com.rickenbazolo.toon.converter.json.ToonToJsonOptions;
+import com.rickenbazolo.toon.converter.xml.XmlToToonConverter;
+import com.rickenbazolo.toon.converter.xml.XmlToToonOptions;
+import com.rickenbazolo.toon.core.ToonDecoder;
+import com.rickenbazolo.toon.core.ToonEncoder;
+import com.rickenbazolo.toon.exception.XmlParseException;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 
 /**
  * Main facade class for encoding and decoding TOON (Token-Oriented Object Notation) format.
@@ -17,6 +30,7 @@ import java.io.IOException;
  *   <li>Encoding Java objects to TOON format</li>
  *   <li>Decoding TOON strings to Java objects</li>
  *   <li>Converting between JSON and TOON formats</li>
+ *   <li>Converting XML to TOON format</li>
  *   <li>Estimating token savings compared to JSON</li>
  * </ul>
  *
@@ -33,6 +47,9 @@ import java.io.IOException;
  * // JSON conversion
  * String toonFromJson = Toon.fromJson(jsonString);
  * String jsonFromToon = Toon.toJson(toonString);
+ *
+ * // XML conversion
+ * String toonFromXml = Toon.fromXml(xmlString);
  * }</pre>
  *
  * @since 0.1.0
@@ -163,79 +180,232 @@ public class Toon {
     /**
      * Converts a JSON string to TOON format using default options.
      *
-     * <p>Parses the JSON string into a JsonNode and then encodes it to TOON format
-     * using default configuration.</p>
+     * <p>Uses the JsonToToonConverter to parse JSON and encode to TOON format.</p>
      *
      * @param jsonString the JSON string to convert (must be valid JSON)
      * @return the TOON representation of the JSON data
      * @throws IOException if JSON parsing fails
-     * @throws RuntimeException if TOON encoding fails
      * @throws IllegalArgumentException if jsonString is null
      *
-     * @see #fromJson(String, ToonOptions)
+     * @see #fromJson(String, JsonToToonOptions)
+     * @see JsonToToonConverter
+     * @since 0.1.0
      */
     public static String fromJson(String jsonString) throws IOException {
-        return fromJson(jsonString, ToonOptions.DEFAULT);
+        return fromJson(jsonString, JsonToToonOptions.DEFAULT);
     }
 
     /**
-     * Converts a JSON string to TOON format using custom options.
+     * Converts a JSON string to TOON format using custom TOON options.
      *
-     * <p>Parses the JSON string into a JsonNode and then encodes it to TOON format
-     * using the specified options for formatting and delimiters.</p>
+     * <p>Uses the JsonToToonConverter with the specified TOON encoding options.</p>
      *
      * @param jsonString the JSON string to convert (must be valid JSON)
-     * @param options the encoding options to use (must not be null)
+     * @param options the TOON encoding options to use (must not be null)
      * @return the TOON representation of the JSON data
      * @throws IOException if JSON parsing fails
-     * @throws RuntimeException if TOON encoding fails
      * @throws IllegalArgumentException if any parameter is null
      *
-     * @see ToonEncoder
-     * @see ObjectMapper#readTree(String)
+     * @see #fromJson(String, JsonToToonOptions)
+     * @since 0.1.0
      */
     public static String fromJson(String jsonString, ToonOptions options) throws IOException {
-        var node = OBJECT_MAPPER.readTree(jsonString);
-        var encoder = new ToonEncoder(options);
-        return encoder.encode(node);
+        return fromJson(jsonString, new JsonToToonOptions(options));
+    }
+
+    /**
+     * Converts a JSON string to TOON format using custom JSON-to-TOON options.
+     *
+     * <p>Uses the JsonToToonConverter with the specified options.</p>
+     *
+     * @param jsonString the JSON string to convert (must be valid JSON)
+     * @param options the conversion options to use (must not be null)
+     * @return the TOON representation of the JSON data
+     * @throws IOException if JSON parsing fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see JsonToToonConverter
+     * @see JsonToToonOptions
+     * @since 0.2.0
+     */
+    public static String fromJson(String jsonString, JsonToToonOptions options) throws IOException {
+        var converter = new JsonToToonConverter(options);
+        return converter.convert(jsonString);
     }
 
     /**
      * Converts a TOON string to JSON format using default options.
      *
-     * <p>Decodes the TOON string and then converts it to pretty-printed JSON format.</p>
+     * <p>Uses the ToonToJsonConverter with pretty-printing enabled.</p>
      *
      * @param toonString the TOON string to convert (must not be null)
      * @return the JSON representation of the TOON data (pretty-printed)
      * @throws IOException if JSON serialization fails
-     * @throws RuntimeException if TOON decoding fails
+     * @throws ToonDecoder.ToonParseException if TOON decoding fails
      * @throws IllegalArgumentException if toonString is null
      *
-     * @see #toJson(String, ToonOptions)
+     * @see #toJson(String, ToonToJsonOptions)
+     * @see ToonToJsonConverter
+     * @since 0.1.0
      */
     public static String toJson(String toonString) throws IOException {
-        return toJson(toonString, ToonOptions.DEFAULT);
+        return toJson(toonString, ToonToJsonOptions.DEFAULT);
     }
 
     /**
-     * Converts a TOON string to JSON format using custom options.
+     * Converts a TOON string to JSON format using custom TOON options.
      *
-     * <p>Decodes the TOON string using the specified options and then converts
-     * it to pretty-printed JSON format.</p>
+     * <p>Uses the ToonToJsonConverter with the specified TOON decoding options and pretty-printing.</p>
      *
      * @param toonString the TOON string to convert (must not be null)
-     * @param options the decoding options to use (must not be null)
+     * @param options the TOON decoding options to use (must not be null)
      * @return the JSON representation of the TOON data (pretty-printed)
      * @throws IOException if JSON serialization fails
-     * @throws RuntimeException if TOON decoding fails
+     * @throws ToonDecoder.ToonParseException if TOON decoding fails
      * @throws IllegalArgumentException if any parameter is null
      *
-     * @see ToonDecoder
-     * @see ObjectMapper#writerWithDefaultPrettyPrinter()
+     * @see #toJson(String, ToonToJsonOptions)
+     * @since 0.1.0
      */
     public static String toJson(String toonString, ToonOptions options) throws IOException {
-        var node = decode(toonString, options);
-        return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+        return toJson(toonString, new ToonToJsonOptions(options, true));
+    }
+
+    /**
+     * Converts a TOON string to JSON format using custom TOON-to-JSON options.
+     *
+     * <p>Uses the ToonToJsonConverter with the specified options.</p>
+     *
+     * @param toonString the TOON string to convert (must not be null)
+     * @param options the conversion options to use (must not be null)
+     * @return the JSON representation of the TOON data
+     * @throws IOException if JSON serialization fails
+     * @throws ToonDecoder.ToonParseException if TOON decoding fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see ToonToJsonConverter
+     * @see ToonToJsonOptions
+     * @since 0.2.0
+     */
+    public static String toJson(String toonString, ToonToJsonOptions options) throws IOException {
+        var converter = new ToonToJsonConverter(options);
+        return converter.convert(toonString);
+    }
+
+    /**
+     * Converts an XML string to TOON format using default options.
+     *
+     * <p>Uses default configuration with attributes included with "@" prefix,
+     * text content as "#text" field, and automatic array detection.</p>
+     *
+     * @param xmlString the XML string to convert (must be valid XML)
+     * @return the TOON representation of the XML data
+     * @throws XmlParseException if XML parsing fails
+     * @throws IllegalArgumentException if xmlString is null
+     *
+     * @see #fromXml(String, XmlToToonOptions)
+     * @see XmlToToonConverter
+     * @since 0.2.0
+     */
+    public static String fromXml(String xmlString) throws XmlParseException {
+        return fromXml(xmlString, XmlToToonOptions.DEFAULT);
+    }
+
+    /**
+     * Converts an XML string to TOON format using custom options.
+     *
+     * <p>Uses the XmlToToonConverter with the specified options for attribute handling,
+     * text content handling, and array detection.</p>
+     *
+     * @param xmlString the XML string to convert (must be valid XML)
+     * @param xmlOptions the XML parsing options to use (must not be null)
+     * @return the TOON representation of the XML data
+     * @throws XmlParseException if XML parsing fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see XmlToToonConverter
+     * @see XmlToToonOptions
+     * @since 0.2.0
+     */
+    public static String fromXml(String xmlString, XmlToToonOptions xmlOptions) throws XmlParseException {
+        var converter = new XmlToToonConverter(xmlOptions);
+        return converter.convert(xmlString);
+    }
+
+    /**
+     * Converts an XML file to TOON format using default options.
+     *
+     * <p>Reads the XML file content and converts it to TOON format using default configuration.</p>
+     *
+     * @param xmlFile the XML file to parse (must exist and be readable)
+     * @return the TOON representation of the XML data
+     * @throws IOException if file reading fails
+     * @throws XmlParseException if XML parsing fails
+     * @throws IllegalArgumentException if xmlFile is null
+     *
+     * @see #fromXml(String)
+     * @since 0.2.0
+     */
+    public static String fromXmlFile(File xmlFile) throws IOException, XmlParseException {
+        return fromXmlFile(xmlFile, XmlToToonOptions.DEFAULT);
+    }
+
+    /**
+     * Converts an XML file to TOON format using custom options.
+     *
+     * <p>Reads the XML file content and converts it to TOON format using the specified options.</p>
+     *
+     * @param xmlFile the XML file to parse (must exist and be readable)
+     * @param xmlOptions the XML parsing options to use (must not be null)
+     * @return the TOON representation of the XML data
+     * @throws IOException if file reading fails
+     * @throws XmlParseException if XML parsing fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see #fromXml(String, XmlToToonOptions)
+     * @since 0.2.0
+     */
+    public static String fromXmlFile(File xmlFile, XmlToToonOptions xmlOptions) throws IOException, XmlParseException {
+        String xmlString = Files.readString(xmlFile.toPath());
+        return fromXml(xmlString, xmlOptions);
+    }
+
+    /**
+     * Converts an XML input stream to TOON format using default options.
+     *
+     * <p>Reads the XML content from the stream and converts it to TOON format.</p>
+     *
+     * @param xmlStream the XML input stream (must not be null)
+     * @return the TOON representation of the XML data
+     * @throws IOException if stream reading fails
+     * @throws XmlParseException if XML parsing fails
+     * @throws IllegalArgumentException if xmlStream is null
+     *
+     * @see #fromXml(String)
+     * @since 0.2.0
+     */
+    public static String fromXmlStream(InputStream xmlStream) throws IOException, XmlParseException {
+        return fromXmlStream(xmlStream, XmlToToonOptions.DEFAULT);
+    }
+
+    /**
+     * Converts an XML input stream to TOON format using custom options.
+     *
+     * <p>Reads the XML content from the stream and converts it to TOON format using the specified options.</p>
+     *
+     * @param xmlStream the XML input stream (must not be null)
+     * @param xmlOptions the XML parsing options to use (must not be null)
+     * @return the TOON representation of the XML data
+     * @throws IOException if stream reading fails
+     * @throws XmlParseException if XML parsing fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see #fromXml(String, XmlToToonOptions)
+     * @since 0.2.0
+     */
+    public static String fromXmlStream(InputStream xmlStream, XmlToToonOptions xmlOptions) throws IOException, XmlParseException {
+        String xmlString = new String(xmlStream.readAllBytes());
+        return fromXml(xmlString, xmlOptions);
     }
 
     /**
