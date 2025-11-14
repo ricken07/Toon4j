@@ -1,6 +1,7 @@
-package com.rickenbazolo;
+package com.rickenbazolo.toon;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.rickenbazolo.toon.config.ToonOptions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

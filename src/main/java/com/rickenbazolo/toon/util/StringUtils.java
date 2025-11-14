@@ -1,6 +1,6 @@
-package com.rickenbazolo.util;
+package com.rickenbazolo.toon.util;
 
-import com.rickenbazolo.ToonOptions;
+import com.rickenbazolo.toon.config.ToonOptions;
 
 import java.util.Set;
 import java.util.regex.Pattern;

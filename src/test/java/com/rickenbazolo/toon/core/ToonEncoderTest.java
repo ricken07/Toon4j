@@ -1,5 +1,7 @@
-package com.rickenbazolo;
+package com.rickenbazolo.toon.core;
 
+import com.rickenbazolo.toon.Toon;
+import com.rickenbazolo.toon.config.ToonOptions;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
