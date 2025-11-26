@@ -1,8 +1,8 @@
 package com.rickenbazolo.toon.converter.csv;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import com.rickenbazolo.toon.core.ToonDecoder;
 import com.rickenbazolo.toon.exception.CsvException;
 import org.apache.commons.csv.CSVFormat;
@@ -201,7 +201,7 @@ public class ToonToCsvConverter {
         }
 
         if (options.autoDetectArray() && node.isObject()) {
-            var fields = node.fields();
+            var fields = node.properties().iterator();
             while (fields.hasNext()) {
                 var entry = fields.next();
                 if (entry.getValue().isArray()) {
@@ -244,7 +244,7 @@ public class ToonToCsvConverter {
     private Map<String, Object> extractRowFromObject(ObjectNode objectNode) {
         var row = new LinkedHashMap<String, Object>();
 
-        var fields = objectNode.fields();
+        var fields = objectNode.properties().iterator();
         while (fields.hasNext()) {
             var entry = fields.next();
             var key = entry.getKey();
@@ -275,7 +275,7 @@ public class ToonToCsvConverter {
      */
     private void flattenObject(String prefix, JsonNode node, Map<String, Object> target) {
         if (node.isObject()) {
-            var fields = node.fields();
+            var fields = node.properties().iterator();
             while (fields.hasNext()) {
                 var entry = fields.next();
                 var key = prefix + "." + entry.getKey();

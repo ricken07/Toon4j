@@ -48,7 +48,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
-        <jackson.version>2.17.2</jackson.version>
+        <jackson.version>3.0.0</jackson.version>
         <assertj.version>3.26.3</assertj.version>
         <commons-csv.version>1.11.0</commons-csv.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -57,7 +57,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>

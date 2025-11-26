@@ -1,9 +1,9 @@
 package com.rickenbazolo.toon.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import com.rickenbazolo.toon.config.ToonOptions;
 import com.rickenbazolo.toon.util.StringUtils;
 
@@ -66,7 +66,7 @@ import java.util.stream.StreamSupport;
 public class ToonEncoder {
 
     private final ToonOptions options;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public ToonEncoder() {
         this(ToonOptions.DEFAULT);
@@ -74,7 +74,7 @@ public class ToonEncoder {
 
     public ToonEncoder(ToonOptions options) {
         this.options = options;
-        this.objectMapper = new ObjectMapper();
+        this.jsonMapper = new JsonMapper();
     }
 
     /**
@@ -126,38 +126,38 @@ public class ToonEncoder {
      */
     private JsonNode normalizeValue(Object value) {
         if (value == null) {
-            return objectMapper.nullNode();
+            return jsonMapper.nullNode();
         }
 
         if (value instanceof Date date) {
-            return objectMapper.valueToTree(date.toInstant().toString());
+            return jsonMapper.valueToTree(date.toInstant().toString());
         }
 
         if (value instanceof Instant instant) {
-            return objectMapper.valueToTree(instant.toString());
+            return jsonMapper.valueToTree(instant.toString());
         }
 
         if (value instanceof BigInteger bigInt) {
             if (bigInt.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) <= 0
                 && bigInt.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) >= 0) {
-                return objectMapper.valueToTree(bigInt.longValue());
+                return jsonMapper.valueToTree(bigInt.longValue());
             }
-            return objectMapper.valueToTree(bigInt.toString());
+            return jsonMapper.valueToTree(bigInt.toString());
         }
 
         if (value instanceof Double d) {
             if (d.isNaN() || d.isInfinite()) {
-                return objectMapper.nullNode();
+                return jsonMapper.nullNode();
             }
         }
 
         if (value instanceof Float f) {
             if (f.isNaN() || f.isInfinite()) {
-                return objectMapper.nullNode();
+                return jsonMapper.nullNode();
             }
         }
 
-        return objectMapper.valueToTree(value);
+        return jsonMapper.valueToTree(value);
     }
 
     /**
@@ -212,7 +212,7 @@ public class ToonEncoder {
             return;
         }
 
-        var fields = obj.fields();
+        var fields = obj.properties().iterator();
         var first = true;
 
         while (fields.hasNext()) {
@@ -337,9 +337,9 @@ public class ToonEncoder {
 
         for (var node : array) {
             var obj = (ObjectNode) node;
-            var values = obj.elements();
+            var values = obj.properties().iterator();
             while (values.hasNext()) {
-                var value = values.next();
+                var value = values.next().getValue();
                 if (value.isObject() || value.isArray()) {
                     return false;
                 }
@@ -355,7 +355,7 @@ public class ToonEncoder {
 
         var first = (ObjectNode) array.get(0);
         var fields = new ArrayList<String>();
-        first.fields().forEachRemaining(entry -> fields.add(entry.getKey()));
+        first.properties().iterator().forEachRemaining(entry -> fields.add(entry.getKey()));
         Collections.sort(fields);
 
         sb.append("{");
@@ -480,7 +480,7 @@ public class ToonEncoder {
 
             if (node.isObject() && !node.isEmpty()) {
                 var obj = (ObjectNode) node;
-                var fields = obj.fields();
+                var fields = obj.properties().iterator();
                 var first = true;
 
                 while (fields.hasNext()) {
@@ -575,7 +575,7 @@ public class ToonEncoder {
 
         var first = (ObjectNode) array.get(0);
         var fields = new ArrayList<String>();
-        first.fields().forEachRemaining(entry -> fields.add(entry.getKey()));
+        first.properties().iterator().forEachRemaining(entry -> fields.add(entry.getKey()));
         Collections.sort(fields);
 
         sb.append("{");
@@ -635,7 +635,7 @@ public class ToonEncoder {
 
             if (node.isObject() && !node.isEmpty()) {
                 var obj = (ObjectNode) node;
-                var fields = obj.fields();
+                var fields = obj.properties().iterator();
                 var first = true;
 
                 while (fields.hasNext()) {
@@ -806,7 +806,7 @@ public class ToonEncoder {
      */
     private Set<String> getObjectKeys(ObjectNode obj) {
         var keys = new LinkedHashSet<String>();
-        obj.fieldNames().forEachRemaining(keys::add);
+        obj.propertyNames().iterator().forEachRemaining(keys::add);
         return keys;
     }
 }

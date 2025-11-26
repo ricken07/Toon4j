@@ -1,7 +1,7 @@
 package com.rickenbazolo.toon;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.rickenbazolo.toon.config.ToonOptions;
 import com.rickenbazolo.toon.converter.json.JsonToToonConverter;
 import com.rickenbazolo.toon.converter.json.JsonToToonOptions;

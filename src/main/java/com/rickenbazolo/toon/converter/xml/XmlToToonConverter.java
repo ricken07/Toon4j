@@ -1,9 +1,9 @@
 package com.rickenbazolo.toon.converter.xml;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import com.rickenbazolo.toon.core.ToonEncoder;
 import com.rickenbazolo.toon.exception.XmlParseException;
 import org.w3c.dom.Document;
@@ -41,7 +41,7 @@ import java.util.Map;
 public class XmlToToonConverter {
 
     private final XmlToToonOptions xmlOptions;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     /**
      * Creates a new XmlToToonConverter with the specified options.
@@ -54,7 +54,7 @@ public class XmlToToonConverter {
             throw new IllegalArgumentException("XmlToToonOptions cannot be null");
         }
         this.xmlOptions = xmlOptions;
-        this.objectMapper = new ObjectMapper();
+        this.jsonMapper = new JsonMapper();
     }
 
     /**
@@ -75,7 +75,7 @@ public class XmlToToonConverter {
             JsonNode jsonNode = buildJsonNode(rootElement);
 
             // Wrap in root element if needed
-            ObjectNode rootNode = objectMapper.createObjectNode();
+            ObjectNode rootNode = jsonMapper.createObjectNode();
             rootNode.set(getElementName(rootElement), jsonNode);
 
             // Encode to TOON
@@ -96,7 +96,7 @@ public class XmlToToonConverter {
      * @return the JsonNode representation of the element
      */
     private JsonNode buildJsonNode(Element element) {
-        ObjectNode node = objectMapper.createObjectNode();
+        ObjectNode node = jsonMapper.createObjectNode();
 
         // Handle attributes
         if (xmlOptions.includeAttributes() && element.hasAttributes()) {
@@ -116,7 +116,7 @@ public class XmlToToonConverter {
 
             if (shouldDetectArray && elements.size() > 1) {
                 // Array detected
-                ArrayNode array = objectMapper.createArrayNode();
+                ArrayNode array = jsonMapper.createArrayNode();
                 for (Element child : elements) {
                     array.add(buildJsonNode(child));
                 }

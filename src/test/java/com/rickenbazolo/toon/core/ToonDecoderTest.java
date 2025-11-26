@@ -1,6 +1,6 @@
 package com.rickenbazolo.toon.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import com.rickenbazolo.toon.Toon;
 import com.rickenbazolo.toon.config.ToonOptions;
 import org.junit.jupiter.api.Test;
