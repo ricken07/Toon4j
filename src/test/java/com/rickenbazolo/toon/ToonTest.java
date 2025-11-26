@@ -1,6 +1,6 @@
 package com.rickenbazolo.toon;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import com.rickenbazolo.toon.config.ToonOptions;
 import org.junit.jupiter.api.Test;
 
@@ -157,8 +157,10 @@ class ToonTest {
     void testFromJsonInvalidJson() {
         String invalidJson = "{invalid json}";
 
+        // Jackson 3.0 throws StreamReadException which is unchecked (extends JacksonException, not IOException)
         assertThatThrownBy(() -> Toon.fromJson(invalidJson))
-            .isInstanceOf(IOException.class);
+            .isInstanceOf(Exception.class)
+            .hasMessageContaining("Unexpected character");
     }
 
     @Test

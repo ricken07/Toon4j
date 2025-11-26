@@ -1,6 +1,6 @@
 package com.rickenbazolo.toon.converter.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.rickenbazolo.toon.core.ToonEncoder;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.io.IOException;
 public class JsonToToonConverter {
 
     private final JsonToToonOptions options;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final ToonEncoder encoder;
 
     /**
@@ -50,7 +50,7 @@ public class JsonToToonConverter {
      */
     public JsonToToonConverter(JsonToToonOptions options) {
         this.options = options;
-        this.objectMapper = new ObjectMapper();
+        this.jsonMapper = new JsonMapper();
         this.encoder = new ToonEncoder(options.toonOptions());
     }
 
@@ -67,7 +67,7 @@ public class JsonToToonConverter {
             throw new IllegalArgumentException("JSON string cannot be null");
         }
 
-        var node = objectMapper.readTree(jsonString);
+        var node = jsonMapper.readTree(jsonString);
         return encoder.encode(node);
     }
 

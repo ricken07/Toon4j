@@ -1,6 +1,6 @@
 package com.rickenbazolo.toon.converter.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.rickenbazolo.toon.core.ToonDecoder;
 import com.rickenbazolo.toon.core.ToonDecoder.ToonParseException;
 
@@ -34,7 +34,7 @@ import java.io.IOException;
 public class ToonToJsonConverter {
 
     private final ToonToJsonOptions options;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final ToonDecoder decoder;
 
     /**
@@ -51,7 +51,7 @@ public class ToonToJsonConverter {
      */
     public ToonToJsonConverter(ToonToJsonOptions options) {
         this.options = options;
-        this.objectMapper = new ObjectMapper();
+        this.jsonMapper = new JsonMapper();
         this.decoder = new ToonDecoder(options.toonOptions());
     }
 
@@ -72,9 +72,9 @@ public class ToonToJsonConverter {
         var node = decoder.decode(toonString);
 
         if (options.prettyPrint()) {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+            return jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
         } else {
-            return objectMapper.writeValueAsString(node);
+            return jsonMapper.writeValueAsString(node);
         }
     }
 

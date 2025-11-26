@@ -1,8 +1,8 @@
 package com.rickenbazolo.toon.converter.csv;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import com.rickenbazolo.toon.core.ToonEncoder;
 import com.rickenbazolo.toon.exception.CsvException;
 import com.rickenbazolo.toon.exception.CsvParseException;
@@ -63,7 +63,7 @@ import java.util.Map.Entry;
 public class CsvToToonConverter {
 
     private final CsvToToonOptions options;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final ToonEncoder encoder;
 
     /**
@@ -84,7 +84,7 @@ public class CsvToToonConverter {
             throw new IllegalArgumentException("CsvToToonOptions cannot be null");
         }
         this.options = options;
-        this.objectMapper = new ObjectMapper();
+        this.jsonMapper = new JsonMapper();
         this.encoder = new ToonEncoder(options.toonOptions());
     }
 
@@ -151,7 +151,7 @@ public class CsvToToonConverter {
 
             // TOON format requires arrays to be fields within objects, not standalone
             // Wrap the array in an object with a "data" key
-            var wrapper = objectMapper.createObjectNode();
+            var wrapper = jsonMapper.createObjectNode();
             wrapper.set("data", jsonNode);
 
             return encoder.encode(wrapper);
@@ -174,7 +174,7 @@ public class CsvToToonConverter {
 
         try (var parser = csvFormat.parse(reader)) {
             var headers = extractHeaders(parser);
-            var arrayNode = objectMapper.createArrayNode();
+            var arrayNode = jsonMapper.createArrayNode();
 
             for (var record : parser) {
                 if (record.size() == 0 || (record.size() == 1 && record.get(0).isEmpty())) {
@@ -183,7 +183,7 @@ public class CsvToToonConverter {
                     }
                 }
 
-                var rowNode = objectMapper.createObjectNode();
+                var rowNode = jsonMapper.createObjectNode();
 
                 for (int i = 0; i < headers.size(); i++) {
                     var header = headers.get(i);

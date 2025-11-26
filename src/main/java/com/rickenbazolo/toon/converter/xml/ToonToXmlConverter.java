@@ -1,8 +1,8 @@
 package com.rickenbazolo.toon.converter.xml;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import com.rickenbazolo.toon.core.ToonDecoder;
 import com.rickenbazolo.toon.exception.XmlException;
 import org.w3c.dom.Document;
@@ -74,7 +74,7 @@ public class ToonToXmlConverter {
             // Build XML from JsonNode
             if (jsonNode.isObject() && jsonNode.size() == 1) {
                 // Single root element - use the field name as root
-                Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+                Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.properties().iterator();
                 Map.Entry<String, JsonNode> entry = fields.next();
                 Element rootElement = buildElement(doc, entry.getKey(), entry.getValue());
                 doc.appendChild(rootElement);
@@ -105,7 +105,7 @@ public class ToonToXmlConverter {
 
         if (node.isObject()) {
             ObjectNode objectNode = (ObjectNode) node;
-            Iterator<Map.Entry<String, JsonNode>> fields = objectNode.fields();
+            Iterator<Map.Entry<String, JsonNode>> fields = objectNode.properties().iterator();
 
             String textContent = null;
 
