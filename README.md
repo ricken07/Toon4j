@@ -1,6 +1,6 @@
-# Toon4j - Token-Oriented Object Notation 4 Java
+# TOON4J - Token-Oriented Object Notation 4 Java
 
-[![Toon4j Tests](https://github.com/ricken07/Toon4j/actions/workflows/build.yml/badge.svg)](https://github.com/ricken07/Toon4j/actions/workflows/build.yml)
+[![Build and Tests](https://github.com/ricken07/Toon4j/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/ricken07/Toon4j/actions/workflows/build-and-test.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rickenbazolo_Toon4j&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rickenbazolo_Toon4j)
 [![Release](https://github.com/ricken07/Toon4j/actions/workflows/release.yml/badge.svg)](https://github.com/ricken07/Toon4j/actions/workflows/release.yml)
 [![Java 17+](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://openjdk.org/projects/jdk/17/)
