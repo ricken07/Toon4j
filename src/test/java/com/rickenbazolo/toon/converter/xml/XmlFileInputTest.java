@@ -221,7 +221,7 @@ class XmlFileInputTest {
 
         logger.debug("\n1. Original XML file:");
         String originalXml = Files.readString(originalFile.toPath());
-        logger.debug(originalXml.substring(0, Math.min(300, originalXml.length())) + "...");
+        logger.debug("{}...", originalXml.substring(0, Math.min(300, originalXml.length())));
 
         // XML File → TOON (without attributes to get tabular format)
         XmlToToonOptions xmlOptions = XmlToToonOptions.builder()
@@ -229,12 +229,12 @@ class XmlFileInputTest {
             .build();
         String toon = Toon.fromXml(originalFile, xmlOptions);
         logger.debug("\n2. Converted to TOON:");
-        logger.debug(toon.substring(0, Math.min(400, toon.length())) + "...");
+        logger.debug("{}...", toon.substring(0, Math.min(400, toon.length())));
 
         // TOON → XML
         String resultXml = Toon.toXml(toon);
         logger.debug("\n3. Converted back to XML:");
-        logger.debug(resultXml.substring(0, Math.min(300, resultXml.length())) + "...");
+        logger.debug("{}...", resultXml.substring(0, Math.min(300, resultXml.length())));
 
         // Verify essential content is preserved
         assertNotNull(resultXml);
