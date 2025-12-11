@@ -1,0 +1,11 @@
+app:
+  name: catalog
+  replicas: 3
+  image:
+    repository: example/catalog
+    tag: v1
+  env:
+    - name: JAVA_OPTS
+      value: "-Xms512m -Xmx512m"
+    - name: LOG_LEVEL
+      value: INFO

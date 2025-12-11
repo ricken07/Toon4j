@@ -15,10 +15,15 @@ import com.rickenbazolo.toon.converter.xml.ToonToXmlConverter;
 import com.rickenbazolo.toon.converter.xml.ToonToXmlOptions;
 import com.rickenbazolo.toon.converter.xml.XmlToToonConverter;
 import com.rickenbazolo.toon.converter.xml.XmlToToonOptions;
+import com.rickenbazolo.toon.converter.yaml.ToonToYamlConverter;
+import com.rickenbazolo.toon.converter.yaml.ToonToYamlOptions;
+import com.rickenbazolo.toon.converter.yaml.YamlToToonConverter;
+import com.rickenbazolo.toon.converter.yaml.YamlToToonOptions;
 import com.rickenbazolo.toon.core.ToonDecoder;
 import com.rickenbazolo.toon.core.ToonEncoder;
 import com.rickenbazolo.toon.exception.XmlException;
 import com.rickenbazolo.toon.exception.XmlParseException;
+import com.rickenbazolo.toon.exception.YamlException;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +43,7 @@ import java.nio.file.Files;
  *   <li>Decoding TOON strings to Java objects</li>
  *   <li>Converting between JSON and TOON formats</li>
  *   <li>Converting between XML and TOON formats</li>
+ *   <li>Converting between YAML and TOON formats</li>
  *   <li>Converting between CSV and TOON formats</li>
  *   <li>Estimating token savings compared to JSON</li>
  * </ul>
@@ -59,6 +65,10 @@ import java.nio.file.Files;
  * // XML conversion
  * String toonFromXml = Toon.fromXml(xmlString);
  * String xmlFromToon = Toon.toXml(toonString);
+ *
+ * // YAML conversion
+ * String toonFromYaml = Toon.fromYaml(yamlString);
+ * String yamlFromToon = Toon.toYaml(toonString);
  *
  * // CSV conversion
  * String toonFromCsv = Toon.fromCsv(csvString);
@@ -183,7 +193,6 @@ public class Toon {
      * @throws IllegalArgumentException if any parameter is null
      *
      * @see ToonDecoder
-     * @see ObjectMapper#treeToValue(com.fasterxml.jackson.core.TreeNode, Class)
      */
     public static <T> T decode(String toonString, ToonOptions options, Class<T> targetClass) throws IOException {
         var node = decode(toonString, options);
@@ -458,6 +467,138 @@ public class Toon {
      */
     public static String toXml(String toonString, ToonToXmlOptions xmlOptions) throws XmlException {
         var converter = new ToonToXmlConverter(xmlOptions);
+        return converter.convert(toonString);
+    }
+
+    /**
+     * Converts a YAML string to TOON format using default options.
+     *
+     * @param yamlString the YAML string to convert (must be valid YAML)
+     * @return the TOON representation of the YAML data
+     * @throws YamlException if conversion fails
+     * @throws IllegalArgumentException if yamlString is null
+     *
+     * @see #fromYaml(String, YamlToToonOptions)
+     * @see YamlToToonConverter
+     * @since 0.4.0
+     */
+    public static String fromYaml(String yamlString) {
+        return fromYaml(yamlString, YamlToToonOptions.DEFAULT);
+    }
+
+    /**
+     * Converts a YAML string to TOON format using custom options.
+     *
+     * @param yamlString the YAML string to convert (must be valid YAML)
+     * @param yamlOptions the YAML parsing options to use (must not be null)
+     * @return the TOON representation of the YAML data
+     * @throws YamlException if conversion fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see YamlToToonConverter
+     * @see YamlToToonOptions
+     * @since 0.4.0
+     */
+    public static String fromYaml(String yamlString, YamlToToonOptions yamlOptions) {
+        var converter = new YamlToToonConverter(yamlOptions);
+        return converter.convert(yamlString);
+    }
+
+    /**
+     * Converts a YAML file to TOON format using default options.
+     *
+     * @param yamlFile the YAML file to parse (must exist and be readable)
+     * @return the TOON representation of the YAML data
+     * @throws IOException if file reading or YAML parsing fails
+     * @throws IllegalArgumentException if yamlFile is null
+     *
+     * @see #fromYaml(String)
+     * @since 0.4.0
+     */
+    public static String fromYaml(File yamlFile) throws IOException {
+        return fromYaml(yamlFile, YamlToToonOptions.DEFAULT);
+    }
+
+    /**
+     * Converts a YAML file to TOON format using custom options.
+     *
+     * @param yamlFile the YAML file to parse (must exist and be readable)
+     * @param yamlOptions the YAML parsing options to use (must not be null)
+     * @return the TOON representation of the YAML data
+     * @throws IOException if file reading or YAML parsing fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see #fromYaml(String, YamlToToonOptions)
+     * @since 0.4.0
+     */
+    public static String fromYaml(File yamlFile, YamlToToonOptions yamlOptions) throws IOException {
+        var converter = new YamlToToonConverter(yamlOptions);
+        return converter.convert(yamlFile);
+    }
+
+    /**
+     * Converts a YAML input stream to TOON format using default options.
+     *
+     * @param yamlStream the YAML input stream (must not be null)
+     * @return the TOON representation of the YAML data
+     * @throws IOException if stream reading or YAML parsing fails
+     * @throws IllegalArgumentException if yamlStream is null
+     *
+     * @see #fromYaml(String)
+     * @since 0.4.0
+     */
+    public static String fromYaml(InputStream yamlStream) throws IOException {
+        return fromYaml(yamlStream, YamlToToonOptions.DEFAULT);
+    }
+
+    /**
+     * Converts a YAML input stream to TOON format using custom options.
+     *
+     * @param yamlStream the YAML input stream (must not be null)
+     * @param yamlOptions the YAML parsing options to use (must not be null)
+     * @return the TOON representation of the YAML data
+     * @throws IOException if stream reading or YAML parsing fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see #fromYaml(String, YamlToToonOptions)
+     * @since 0.4.0
+     */
+    public static String fromYaml(InputStream yamlStream, YamlToToonOptions yamlOptions) throws IOException {
+        var converter = new YamlToToonConverter(yamlOptions);
+        return converter.convert(yamlStream);
+    }
+
+    /**
+     * Converts a TOON string to YAML format using default options.
+     *
+     * @param toonString the TOON string to convert (must not be null)
+     * @return the YAML representation of the TOON data
+     * @throws YamlException if conversion fails
+     * @throws IllegalArgumentException if toonString is null
+     *
+     * @see #toYaml(String, ToonToYamlOptions)
+     * @see ToonToYamlConverter
+     * @since 0.4.0
+     */
+    public static String toYaml(String toonString) {
+        return toYaml(toonString, ToonToYamlOptions.DEFAULT);
+    }
+
+    /**
+     * Converts a TOON string to YAML format using custom options.
+     *
+     * @param toonString the TOON string to convert (must not be null)
+     * @param yamlOptions the YAML generation options to use (must not be null)
+     * @return the YAML representation of the TOON data
+     * @throws YamlException if conversion fails
+     * @throws IllegalArgumentException if any parameter is null
+     *
+     * @see ToonToYamlConverter
+     * @see ToonToYamlOptions
+     * @since 0.4.0
+     */
+    public static String toYaml(String toonString, ToonToYamlOptions yamlOptions) {
+        var converter = new ToonToYamlConverter(yamlOptions);
         return converter.convert(toonString);
     }
 
